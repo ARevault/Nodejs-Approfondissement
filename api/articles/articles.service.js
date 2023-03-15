@@ -17,6 +17,14 @@ class ArticleService {
   delete(id) {
     return Article.deleteOne({ _id: id });
   }
+  async displayArticles(id) {
+    try{
+      const articles = await Article.find({ user: id }).populate('user','-password');
+      return articles
+    } catch(err){
+      throw err;
+    }
+  }
 }
 
 module.exports = new ArticleService();

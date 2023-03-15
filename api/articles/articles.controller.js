@@ -1,3 +1,4 @@
+const User = require("../users/users.model");
 const articlesService = require("./articles.service");
 
 class ArticlesController {
@@ -34,6 +35,10 @@ class ArticlesController {
     try {
       const id = req.params.id;
       const data = req.body;
+      const user = req.user;
+      if(user.role !== "admin"){
+        return res.status(401).send('Non autorisé')
+      }
       const articleModified = await articlesService.update(id, data);
       res.json(articleModified);
     } catch (err) {
@@ -43,6 +48,10 @@ class ArticlesController {
   async delete(req, res, next) {
     try {
       const id = req.params.id;
+      const user = req.user; 
+      if (user.role !== "admin") {
+        return res.status(401).send("Non autorisé"); 
+      }
       await articlesService.delete(id);
       req.io.emit("article:delete", { id });
       res.status(204).send();
