@@ -32,7 +32,7 @@ app.use(express.json());
 app.use("/api/users", authMiddleware, userRouter);
 app.post("/login", usersController.login);
 
-app.use('/api/articles', ArticleRouter)
+app.use('/api/articles', authMiddleware, ArticleRouter)
 
 app.use("/", express.static("public"));
 

@@ -24,9 +24,9 @@ class ArticlesController {
   }
   async create(req, res, next) {
     try {
-      const userID = req.user.id;
-      const art = {...req.body, userID};
-      const article = await articlesService.create(art);
+      //const userID = req.user.id;
+      //const art = {...req.body, userID};
+      const article = await articlesService.create(req.body);
       req.io.emit("article:create", article);
       res.status(201).json(article);
     } catch (err) {
@@ -38,8 +38,11 @@ class ArticlesController {
       const id = req.params.id;
       const data = req.body;
       const user = req.user;
-      if(user.role !== "admin"){
-        return res.status(401).send('Non autorisé')
+      console.log("ID : " + id);
+      console.log("Data :");
+      console.log(data);
+      if (user.role !== "admin") {
+        return res.status(401).send("Non autorisé");
       }
       const articleModified = await articlesService.update(id, data);
       res.json(articleModified);
@@ -50,9 +53,9 @@ class ArticlesController {
   async delete(req, res, next) {
     try {
       const id = req.params.id;
-      const user = req.user; 
+      const user = req.user;
       if (user.role !== "admin") {
-        return res.status(401).send("Non autorisé"); 
+        return res.status(401).send("Non autorisé");
       }
       await articlesService.delete(id);
       req.io.emit("article:delete", { id });
